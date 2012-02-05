@@ -1,5 +1,5 @@
 var net = require('net');
-var srv = {'server': null, 'rooms': [], sockets: [], 'queue': {}, 'commands': ['quit help'], 'quit': ['quit', 'exit']};
+var srv = {'server': null, 'rooms': [], 'followers': {}, 'sockets': [], 'queue': {}, 'commands': ['quit help'], 'quit': ['quit', 'exit']};
 exports = module.exports = {};
 
 /**
@@ -17,6 +17,10 @@ function strip(data) {
  **/
 exports.registerRooms = function (data) {
   srv.rooms = data;
+  srv.followers = {};
+  
+  for (var i = 0; i < srv.rooms.length; i++) {
+    srv.followers[srv.rooms[i]] = []; }
 };
 
 /**
@@ -48,8 +52,30 @@ srv.receivedData = function(socket, buf) {
     } else {
       srv.push(socket.id, '\nJoining room ' + srv.rooms[data] + '…\n\n');
       srv.doneEvent(socket.id, 'chooseRoom');
+      
+      this.unfollowAll(socket.id);
+      this.follow(socket.id, srv.rooms[data]);
     }
   };
+};
+
+/**
+ * Set socket to follow room
+ * @param int sID socket ID
+ * @param string room
+ **/
+srv.follow = function(sID, room) {
+  srv.followers[room].push(sID);
+};
+
+/**
+ * Set socket to unfollow all rooms
+ * @param int sID socket ID
+ **/
+srv.unfollowAll = function(sID) {
+  for (var n in srv.followers) {
+    delete srv.followers[n][srv.followers[n].indexOf(sID)];
+  }
 };
 
 /**
@@ -76,6 +102,12 @@ srv.closed = function(socket) {
  **/
 srv.push = function(sID, data) {
   srv.sockets[sID].write(data);
+};
+
+srv.pushToRoom = function(room, data) {
+  for (var i = 0; i < srv.followers[room].length; i++) {
+    srv.push(srv.followers[room][i], data);
+  }
 };
 
 /**
@@ -152,6 +184,15 @@ exports.init = function() {
   });
 
   return this;
+};
+
+/**
+ * Send message to room
+ * @param string room
+ * @param string data
+ **/
+exports.push = function(room, data) {
+  srv.pushToRoom(room, data);
 };
 
 /**
