@@ -14,4 +14,10 @@ var pushDatabase = function() {
 
 var timeoutId = setTimeout(pushGeneral, 6000);
 var timeoutId = setTimeout(pushDatabase, 8000);
+var timeoutId = setTimeout(pushDatabase, 8047);
+var timeoutId = setTimeout(pushDatabase, 8100);
+var timeoutId = setTimeout(pushDatabase, 8452);
+var timeoutId = setTimeout(pushDatabase, 8652);
+var timeoutId = setTimeout(pushDatabase, 8852);
+var timeoutId = setTimeout(pushDatabase, 8952);
 

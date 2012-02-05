@@ -193,7 +193,9 @@ exports.init = function() {
  **/
 exports.push = function(room, data) {
   var now = new Date();
-  data = now.getFullYear() + data + '\n';
+  var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds(), ms = now.getMilliseconds();
+  var ts = '[1;30m[[1;32m' + (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m)  + ':' + (s < 10 ? '0' + s : s) + '.' + (ms < 100 ? (ms < 10 ? '00' + ms : '0' + ms) : ms) + '[1;30m][0m'; 
+  data = ts + '  ' + data + '\n';
   srv.pushToRoom(room, data);
 };
 
