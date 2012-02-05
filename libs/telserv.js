@@ -8,7 +8,7 @@ exports = module.exports = {};
  * @return string
  **/
 function strip(data) {
-	return data.toString().replace(/(\r\n|\n|\r)/gm,"");
+  return data.toString().replace(/(\r\n|\n|\r)/gm,"");
 }
 
 /**
@@ -40,9 +40,9 @@ srv.handleCommand = function(sID, cmd) {
 srv.receivedData = function(socket, buf) {
   var data = strip(buf);
 
-	if (srv.quit.indexOf(data) > -1) {
-		return srv.sockets[socket.id].end('\nHave a nice day!\n'); }
-	
+  if (srv.quit.indexOf(data) > -1) {
+    return srv.sockets[socket.id].end('\nHave a nice day!\n'); }
+  
   if (!srv.isWaiting(socket.id)) {
     return true || srv.handleCommand(socket.id, data); }
   
@@ -115,15 +115,15 @@ srv.pushToRoom = function(room, data) {
  * @param object socket
  **/
 srv.newConnection = function(socket) {
-	socket.id = id = srv.sockets.length;
-	socket.on('data', function(data) {
-		srv.receivedData(socket, data);
-	}).on('end', function() {
-		srv.closed(socket);
-	});	
-	
-	if (!srv.queue[socket.id]) {
-	  srv.queue[socket.id] = []; }
+  socket.id = id = srv.sockets.length;
+  socket.on('data', function(data) {
+    srv.receivedData(socket, data);
+  }).on('end', function() {
+    srv.closed(socket);
+  }); 
+  
+  if (!srv.queue[socket.id]) {
+    srv.queue[socket.id] = []; }
   srv.sockets.push(socket);
 
   srv.push(id, '\nWelcome!\n');
