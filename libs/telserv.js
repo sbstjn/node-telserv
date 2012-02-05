@@ -192,6 +192,8 @@ exports.init = function() {
  * @param string data
  **/
 exports.push = function(room, data) {
+  var now = new Date();
+  data = now.getFullYear() + data + '\n';
   srv.pushToRoom(room, data);
 };
 
