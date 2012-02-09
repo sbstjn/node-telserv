@@ -92,7 +92,7 @@ srv.doneEvent = function(sID, event) {
  * @param object socket
  **/
 srv.closed = function(socket) {
-
+  srv.unfollowAll(socket.id);
 };
 
 /**
@@ -101,7 +101,8 @@ srv.closed = function(socket) {
  * @param string data
  **/
 srv.push = function(sID, data) {
-  srv.sockets[sID].write(data);
+  if (srv.sockets[sID]) {
+    srv.sockets[sID].write(data); }
 };
 
 srv.pushToRoom = function(room, data) {
